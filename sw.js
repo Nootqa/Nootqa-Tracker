@@ -1,10 +1,11 @@
 const CACHE_NAME = 'nootqa-tracker-v1';
+
 const ASSETS = [
-  '/',
   '/index.html',
   '/manifest.json',
-  '/icons/nootqa-192.png',
-  '/icons/nootqa-512.png'
+  '/sw.js',
+  '/Nootqa/icon-192.png.jpeg',
+  '/Nootqa/icon-512.png.jpeg'
 ];
 
 self.addEventListener('install', event => {
@@ -17,7 +18,9 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+        keys
+          .filter(k => k !== CACHE_NAME)
+          .map(k => caches.delete(k))
       )
     )
   );
