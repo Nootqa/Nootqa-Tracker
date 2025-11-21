@@ -5,13 +5,14 @@
   <title>Qur'an Tracker – Hifdh & Révision</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- PWA / Manifest -->
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#a1897b" />
-
-  <!-- Icônes (à ajouter dans le dépôt : icon-192.png et icon-512.png) -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+  <!-- PWA & icônes -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#a1897b">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/nootqa-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/nootqa-512.png">
+  <link rel="apple-touch-icon" href="/icons/nootqa-512.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nootqa Tracker">
 
   <style>
     * {
@@ -316,6 +317,15 @@
       line-height: 1.4;
     }
 
+    .copyright {
+      margin-top: 4px;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 6px 10px 4px 10px;
+      border-top: 1px solid rgba(0,0,0,0.04);
+    }
+
     @media (min-width: 720px) {
       body { padding: 24px; }
       .body { padding: 18px 18px 22px 18px; }
@@ -408,6 +418,11 @@
 
           <div class="footer-note" id="footerNote">
             Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.
+          </div>
+
+          <div class="copyright">
+            © 2025 Nootqa. Usage personnel individuel uniquement.  
+            Reproduction, partage ou revente interdits.
           </div>
 
         </div>
@@ -737,19 +752,6 @@
         buildSurah(n);
       });
     })();
-  </script>
-
-  <!-- Enregistrement du Service Worker pour la PWA -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .catch((err) => {
-            console.log("Service worker registration failed:", err);
-          });
-      });
-    }
   </script>
 </body>
 </html>
