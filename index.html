@@ -5,6 +5,18 @@
   <title>Qur'an Tracker – Hifdh & Révision</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Couleur de thème pour PWA -->
+  <meta name="theme-color" content="#a1897b" />
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Icône iOS (tu pourras mettre un vrai logo plus tard) -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Qur'an Tracker" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -253,7 +265,7 @@
     }
 
     .verse.rev-on {
-      background: var(--rev-bg);
+      background: var(--rev-bg); /* beige clair visible */
       border-color: var(--rev-color);
       box-shadow: 0 0 0 1px rgba(111,123,112,0.35);
       color: var(--rev-color);
@@ -399,25 +411,14 @@
           </div>
 
           <div class="footer-note" id="footerNote">
-            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.
+            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.  
+            <br />
+            © Nootqa – usage strictement personnel, reproduction et partage interdits.
           </div>
 
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- COPYRIGHT -->
-  <div style="
-    text-align:center;
-    font-size:0.72rem;
-    color: var(--text-muted);
-    margin-top:18px;
-    padding:12px 0;
-    letter-spacing:0.02em;
-  ">
-    © Nootqa Tracker — Usage strictement personnel.<br>
-    Reproduction, partage ou diffusion interdits.
   </div>
 
   <script>
@@ -554,7 +555,7 @@
         revSub: "Clique sur les versets révisés.",
         legendMem: "Mémorisé",
         legendRev: "Révisé",
-        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.",
+        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.  \n© Nootqa – usage strictement personnel, reproduction et partage interdits.",
         progress(mem, rev) {
           return `${mem} mémorisé · ${rev} révisé`;
         }
@@ -572,7 +573,7 @@
         revSub: "Tap the verses you have revised.",
         legendMem: "Memorised",
         legendRev: "Revised",
-        footerNote: "A minimal interface to help you stay consistent with your Qur'an.",
+        footerNote: "A minimal interface to help you stay consistent with your Qur'an.  \n© Nootqa – strictly personal use only.",
         progress(mem, rev) {
           const m = mem === 1 ? "verse" : "verses";
           const r = rev === 1 ? "verse" : "verses";
@@ -731,6 +732,7 @@
       langSelect.value = savedLang;
       applyLanguage(savedLang);
 
+      // Sourate par défaut = Al-Fâtiha (1)
       const savedSurah = parseInt(localStorage.getItem("nootqa_surah") || "1", 10);
       surahSelect.value = savedSurah;
       buildSurah(savedSurah);
@@ -741,6 +743,15 @@
         buildSurah(n);
       });
     })();
+
+    /* ------ Enregistrement du Service Worker (PWA) ------ */
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(err => {
+          console.log("SW registration failed", err);
+        });
+      });
+    }
   </script>
 </body>
 </html>
