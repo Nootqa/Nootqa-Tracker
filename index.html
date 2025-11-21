@@ -2,49 +2,61 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>NOOTQA – Tracker Qur'an Hifdh & Mourāja'a (Interactif)</title>
+  <title>Qur'an Tracker – Hifdh & Révision</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     * {
       box-sizing: border-box;
     }
 
     :root {
-      --bg: #f4f2f8;
+      /* Palette mocha neutre */
+      --bg: #efe8e1;
       --card: #ffffff;
-      --primary: #6b4a7a;
-      --primary-soft: #f4edf9;
-      --border-soft: #e1d6ec;
-      --text-main: #222222;
-      --text-soft: #666666;
-      --text-muted: #999999;
-      --mem-color: #6b4a7a;
-      --rev-color: #89978a;
+      --primary: #a1897b;
+      --primary-soft: #dac8bc;
+      --border-soft: #d1c0b4;
+      --text-main: #2b2320;
+      --text-soft: #6e625a;
+      --text-muted: #9b8f86;
+
+      --mem-color: #a1897b;  /* mémorisation */
+      --rev-color: #6f7b70;  /* révision */
+      --rev-bg: #f3ebe4;     /* fond beige clair révision */
     }
 
     body {
       margin: 0;
       padding: 16px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #f9f6ff, #f4f2f8);
+      background: radial-gradient(circle at top, #f6efe8, var(--bg));
       color: var(--text-main);
     }
 
     .app {
-      max-width: 900px;
-      margin: 0 auto 32px auto;
+      max-width: 840px;
+      margin: 0 auto 40px auto;
+    }
+
+    .bismillah {
+      text-align: center;
+      font-size: 1.35rem;
+      margin: 10px 0 8px 0;
+      color: #8d6f5f;
+      font-weight: 600;
     }
 
     .top-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .brand {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -53,8 +65,9 @@
 
     .lang-switch {
       display: flex;
-      gap: 6px;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
       font-size: 0.8rem;
     }
 
@@ -65,35 +78,20 @@
       letter-spacing: 0.16em;
     }
 
-    .lang-btn {
-      border: 1px solid var(--border-soft);
+    .lang-select {
+      padding: 4px 10px;
       border-radius: 999px;
-      padding: 4px 9px;
-      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      background: #f9f4f1;
       font-size: 0.78rem;
-      cursor: pointer;
       color: var(--text-soft);
-    }
-
-    .lang-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .bismillah {
-      text-align: center;
-      font-size: 1.45rem;
-      margin: 10px 0 4px 0;
-      color: var(--primary);
-      font-weight: 600;
-      direction: rtl;
+      outline: none;
     }
 
     h1 {
       text-align: center;
       margin: 4px 0 6px 0;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--text-soft);
@@ -101,22 +99,28 @@
 
     .subtitle {
       text-align: center;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       color: var(--text-soft);
       margin-bottom: 16px;
+      line-height: 1.4;
     }
 
     .card {
       background: var(--card);
       border-radius: 18px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.06);
       overflow: hidden;
-      border: 1px solid var(--border-soft);
+      border: 1px solid #e2d3c8;
+    }
+
+    .tracker {
+      background: var(--card);
+      display: block;
     }
 
     .header-ribbon {
       background: var(--primary);
-      padding: 14px 16px;
+      padding: 16px 16px 14px 16px;
       color: #fff;
     }
 
@@ -138,7 +142,7 @@
       text-transform: uppercase;
       letter-spacing: 0.16em;
       opacity: 0.8;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     .surah-name {
@@ -147,16 +151,17 @@
       margin-bottom: 3px;
     }
 
-    .surah-meta {
-      font-size: 0.75rem;
-      opacity: 0.85;
-    }
-
     .surah-ar {
       font-size: 1.1rem;
       font-weight: 600;
       direction: rtl;
       text-align: right;
+    }
+
+    .surah-meta {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 3px;
     }
 
     .selector {
@@ -188,8 +193,8 @@
     }
 
     .body {
-      padding: 16px;
-      background: radial-gradient(circle at top, #f7f3ff, #f4f2f8);
+      padding: 14px 14px 18px 14px;
+      background: radial-gradient(circle at top, #f4e7db, var(--bg));
     }
 
     .section-title {
@@ -198,7 +203,7 @@
       letter-spacing: 0.18em;
       color: var(--text-soft);
       text-align: center;
-      margin: 10px 0 4px 0;
+      margin: 8px 0 4px 0;
     }
 
     .section-sub {
@@ -209,7 +214,7 @@
     }
 
     .grid-wrapper {
-      background: #f7f3ff;
+      background: var(--primary-soft);
       border-radius: 12px;
       border: 1px solid var(--border-soft);
       padding: 10px;
@@ -231,7 +236,8 @@
       background: #fff;
       cursor: pointer;
       user-select: none;
-      transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease;
+      transition: background 0.15s ease, color 0.15s ease,
+                  transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease;
     }
 
     .verse:active {
@@ -247,9 +253,9 @@
     }
 
     .verse.rev-on {
-      background: #ffffff;
+      background: var(--rev-bg);
       border-color: var(--rev-color);
-      box-shadow: 0 0 0 1px rgba(137,151,138,0.4);
+      box-shadow: 0 0 0 1px rgba(111,123,112,0.35);
       color: var(--rev-color);
       font-weight: 600;
     }
@@ -283,7 +289,7 @@
     }
 
     .legend-dot.rev {
-      background: #ffffff;
+      background: var(--rev-bg);
       border-color: var(--rev-color);
     }
 
@@ -298,7 +304,7 @@
       font-size: 0.72rem;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 8px;
+      margin-top: 6px;
       line-height: 1.4;
     }
 
@@ -310,131 +316,112 @@
     }
   </style>
 </head>
+
 <body>
   <div class="app">
-    <div class="top-bar">
-      <div class="brand" id="brandText">NOOTQA · QUR'AN TRACKER</div>
-      <div class="lang-switch">
-        <span class="lang-label" id="langLabel">LANG</span>
-        <button class="lang-btn active" data-lang="fr">FR</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-      </div>
-    </div>
 
+    <!-- Basmala -->
     <div class="bismillah">
-      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ
     </div>
 
-    <h1 id="mainTitle">TRACKER QURAN – HIFDH &amp; MOURĀJAʿA</h1>
-    <div class="subtitle" id="subtitleText">
-      Une mini-application simple pour suivre ta mémorisation et ta révision du Coran, sourate par sourate, verset par verset.
-    </div>
-
-    <div class="card">
-      <div class="header-ribbon">
-        <div class="header-top">
-          <div class="header-text">
-            <div class="surah-label" id="currentSurahLabel">Sourate actuelle</div>
-            <div class="surah-name" id="surahLatin">78 – An-Naba</div>
-            <div class="surah-meta" id="surahMeta">40 versets</div>
-          </div>
-          <div class="surah-ar" id="surahArabic">سورة النبأ</div>
-        </div>
-
-        <div class="selector">
-          <label for="surahSelect" id="surahSelectLabel">Choisir une sourate :</label>
-          <select id="surahSelect"></select>
-        </div>
+    <!-- Barre du haut -->
+    <div class="top-bar">
+      <div class="brand" id="brandText">QUR'AN TRACKER</div>
+      <div class="lang-switch">
+        <span class="lang-label" id="langLabel">LANGUE</span>
+        <select id="langSelect" class="lang-select">
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
       </div>
+    </div>
 
-      <div class="body">
-        <div class="section">
-          <div class="section-title" id="memTitle">Mémorisation (ḥifdh)</div>
-          <div class="section-sub" id="memSub">Clique sur chaque verset que tu as mémorisé.</div>
-          <div class="grid-wrapper">
-            <div id="gridMem" class="verse-grid"></div>
-            <div class="legend">
-              <div class="legend-item">
-                <div class="legend-dot mem"></div>
-                <span id="legendMem">Mémorisé</span>
-              </div>
+    <!-- Titre / sous-titre -->
+    <h1 id="mainTitle">QUR'AN TRACKER – HIFDH &amp; RÉVISION</h1>
+    <div class="subtitle" id="subtitleText">
+      Une mini-application pour suivre ta mémorisation et ta révision du Qur'an.
+    </div>
+
+    <!-- Carte principale -->
+    <div class="card">
+      <div class="tracker" id="tracker">
+        <div class="header-ribbon">
+          <div class="header-top">
+            <div class="header-text">
+              <div class="surah-label" id="currentSurahLabel">Sourate actuelle</div>
+              <div class="surah-name" id="surahLatin">1. Al-Fatiha</div>
+              <div class="surah-meta" id="surahMeta">7 versets</div>
             </div>
+            <div class="surah-ar" id="surahArabic">سورة الفاتحة</div>
+          </div>
+
+          <div class="selector">
+            <label for="surahSelect" id="surahSelectLabel">Choisir une sourate :</label>
+            <select id="surahSelect"></select>
           </div>
         </div>
 
-        <div class="section">
-          <div class="section-title" id="revTitle">Mourājaʿa (révision)</div>
-          <div class="section-sub" id="revSub">Clique sur les versets que tu as révisés.</div>
-          <div class="grid-wrapper">
-            <div id="gridRev" class="verse-grid"></div>
-            <div class="legend">
-              <div class="legend-item">
-                <div class="legend-dot rev"></div>
-                <span id="legendRev">Révisé</span>
+        <div class="body">
+
+          <!-- Mémorisation -->
+          <div class="section">
+            <div class="section-title" id="memTitle">Mémorisation (ḥifdh)</div>
+            <div class="section-sub" id="memSub">Clique sur les versets mémorisés.</div>
+            <div class="grid-wrapper">
+              <div id="gridMem" class="verse-grid"></div>
+              <div class="legend">
+                <div class="legend-item">
+                  <div class="legend-dot mem"></div>
+                  <span id="legendMem">Mémorisé</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="progress" id="progressText">
-          0 verset mémorisé · 0 verset révisé
-        </div>
+          <!-- Révision -->
+          <div class="section">
+            <div class="section-title" id="revTitle">Révision (mourājaʿa)</div>
+            <div class="section-sub" id="revSub">Clique sur les versets révisés.</div>
+            <div class="grid-wrapper">
+              <div id="gridRev" class="verse-grid"></div>
+              <div class="legend">
+                <div class="legend-item">
+                  <div class="legend-dot rev"></div>
+                  <span id="legendRev">Révisé</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <div class="footer-note" id="footerNote">
-          Ce tracker se concentre sur l’essentiel : des numéros de versets clairs et une vision simple de ta progression.
+          <div class="progress" id="progressText">
+            0 mémorisé · 0 révisé
+          </div>
+
+          <div class="footer-note" id="footerNote">
+            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 
-  <div style="text-align:center;font-size:0.72rem;color:#999999;margin:14px 0;">
-    © Nootqa Tracker — Usage strictement personnel. Reproduction ou diffusion interdite.
+  <!-- COPYRIGHT -->
+  <div style="
+    text-align:center;
+    font-size:0.72rem;
+    color: var(--text-muted);
+    margin-top:18px;
+    padding:12px 0;
+    letter-spacing:0.02em;
+  ">
+    © Nootqa Tracker — Usage strictement personnel.<br>
+    Reproduction, partage ou diffusion interdits.
   </div>
 
   <script>
-    const STRINGS = {
-      fr: {
-        brand: "NOOTQA · QUR'AN TRACKER",
-        langLabel: "LANG",
-        mainTitle: "TRACKER QURAN – HIFDH & MOURĀJAʿA",
-        subtitle: "Une mini-application simple pour suivre ta mémorisation et ta révision du Coran, sourate par sourate, verset par verset.",
-        currentSurahLabel: "Sourate actuelle",
-        surahSelectLabel: "Choisir une sourate :",
-        memTitle: "Mémorisation (ḥifdh)",
-        memSub: "Clique sur chaque verset que tu as mémorisé.",
-        revTitle: "Mourājaʿa (révision)",
-        revSub: "Clique sur les versets que tu as révisés.",
-        legendMem: "Mémorisé",
-        legendRev: "Révisé",
-        footerNote: "Ce tracker se concentre sur l’essentiel : des numéros de versets clairs et une vision simple de ta progression.",
-        progress(memCount, revCount) {
-          const mS = memCount > 1 ? "s" : "";
-          const rS = revCount > 1 ? "s" : "";
-          return `${memCount} verset${mS} mémorisé${mS} · ${revCount} verset${rS} révisé${rS}`;
-        }
-      },
-      en: {
-        brand: "NOOTQA · QUR'AN TRACKER",
-        langLabel: "LANG",
-        mainTitle: "QUR'AN TRACKER – HIFDH & REVISION",
-        subtitle: "A simple mini-app to track your Qur'an memorisation and revision, surah by surah, verse by verse.",
-        currentSurahLabel: "Current surah",
-        surahSelectLabel: "Choose a surah:",
-        memTitle: "Memorisation (ḥifdh)",
-        memSub: "Tap each verse you have memorised.",
-        revTitle: "Revision (murāja'ah)",
-        revSub: "Tap the verses you have revised.",
-        legendMem: "Memorised",
-        legendRev: "Revised",
-        footerNote: "This tracker focuses on what matters: clean verse numbers and a clear view of your progress.",
-        progress(memCount, revCount) {
-          const mWord = memCount === 1 ? "verse" : "verses";
-          const rWord = revCount === 1 ? "verse" : "verses";
-          return `${memCount} ${mWord} memorised · ${revCount} ${rWord} revised`;
-        }
-      }
-    };
-
+    /* --------- Données sourates --------- */
     const SURAH_DATA = [
       { n: 1, latin: "Al-Fatiha", arabic: "الفاتحة", verses: 7 },
       { n: 2, latin: "Al-Baqara", arabic: "البقرة", verses: 286 },
@@ -552,9 +539,51 @@
       { n: 114, latin: "An-Nas", arabic: "الناس", verses: 6 }
     ];
 
+    /* --------- Textes FR / EN --------- */
+    const STRINGS = {
+      fr: {
+        brand: "QUR'AN TRACKER",
+        langLabel: "LANGUE",
+        mainTitle: "QUR'AN TRACKER – HIFDH & RÉVISION",
+        subtitle: "Une mini-application pour suivre ta mémorisation et ta révision du Qur'an.",
+        currentSurahLabel: "Sourate actuelle",
+        surahSelectLabel: "Choisir une sourate :",
+        memTitle: "Mémorisation (ḥifdh)",
+        memSub: "Clique sur les versets mémorisés.",
+        revTitle: "Révision (mourājaʿa)",
+        revSub: "Clique sur les versets révisés.",
+        legendMem: "Mémorisé",
+        legendRev: "Révisé",
+        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.",
+        progress(mem, rev) {
+          return `${mem} mémorisé · ${rev} révisé`;
+        }
+      },
+      en: {
+        brand: "QUR'AN TRACKER",
+        langLabel: "LANG",
+        mainTitle: "QUR'AN TRACKER – HIFDH & REVISION",
+        subtitle: "A simple mini-app to track your Qur'an memorisation and revision.",
+        currentSurahLabel: "Current surah",
+        surahSelectLabel: "Choose a surah:",
+        memTitle: "Memorisation (ḥifdh)",
+        memSub: "Tap the verses you have memorised.",
+        revTitle: "Revision (murāja'ah)",
+        revSub: "Tap the verses you have revised.",
+        legendMem: "Memorised",
+        legendRev: "Revised",
+        footerNote: "A minimal interface to help you stay consistent with your Qur'an.",
+        progress(mem, rev) {
+          const m = mem === 1 ? "verse" : "verses";
+          const r = rev === 1 ? "verse" : "verses";
+          return `${mem} ${m} memorised · ${rev} ${r} revised`;
+        }
+      }
+    };
+
     const el = id => document.getElementById(id);
 
-    const langButtons = document.querySelectorAll(".lang-btn");
+    const langSelect = el("langSelect");
     const brandText = el("brandText");
     const langLabel = el("langLabel");
     const mainTitle = el("mainTitle");
@@ -569,18 +598,19 @@
     const legendRev = el("legendRev");
     const footerNote = el("footerNote");
     const progressText = el("progressText");
+
+    const surahSelect = el("surahSelect");
     const surahLatin = el("surahLatin");
     const surahArabic = el("surahArabic");
     const surahMeta = el("surahMeta");
-    const surahSelect = el("surahSelect");
     const gridMem = el("gridMem");
     const gridRev = el("gridRev");
 
-    let currentLang = "fr";
-
-    function applyLang(lang) {
-      currentLang = lang;
+    /* ------ Changement de langue ------ */
+    function applyLanguage(lang) {
       const S = STRINGS[lang] || STRINGS.fr;
+      document.documentElement.lang = lang;
+      document.body.dir = "ltr"; // on garde LTR, arabe seulement pour les noms de sourates
 
       brandText.textContent = S.brand;
       langLabel.textContent = S.langLabel;
@@ -596,116 +626,121 @@
       legendRev.textContent = S.legendRev;
       footerNote.textContent = S.footerNote;
 
-      document.documentElement.lang = lang;
-      document.body.dir = "ltr";
-
-      updateProgress(parseInt(surahSelect.value || "78", 10));
+      updateProgress();
+      localStorage.setItem("nootqa_lang", lang);
     }
 
-    langButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        langButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        applyLang(btn.dataset.lang);
-      });
+    langSelect.addEventListener("change", () => {
+      applyLanguage(langSelect.value);
     });
 
-    function storageKeyMem(surah, verse) {
-      return `nootqa_mem_${surah}_${verse}`;
+    /* ------ Surates ------ */
+    SURAH_DATA.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.n;
+      opt.textContent = `${s.n}. ${s.latin}`;
+      surahSelect.appendChild(opt);
+    });
+
+    function key(type, surah, verse) {
+      return `nootqa_${type}_${surah}_${verse}`;
     }
 
-    function storageKeyRev(surah, verse) {
-      return `nootqa_rev_${surah}_${verse}`;
-    }
-
-    function renderSurah(num) {
-      const s = SURAH_DATA.find(x => x.n === num);
+    function buildSurah(num) {
+      const s = SURAH_DATA.find(x => x.n == num);
       if (!s) return;
 
-      surahLatin.textContent = `${s.n} – ${s.latin}`;
+      surahLatin.textContent = `${s.n}. ${s.latin}`;
       surahArabic.textContent = "سورة " + s.arabic;
       surahMeta.textContent = `${s.verses} versets`;
 
       gridMem.innerHTML = "";
       gridRev.innerHTML = "";
 
-      for (let i = 1; i <= s.verses; i++) {
-        const memDiv = document.createElement("div");
-        memDiv.className = "verse";
-        memDiv.textContent = i;
-        const memKey = storageKeyMem(s.n, i);
-        if (localStorage.getItem(memKey) === "1") {
-          memDiv.classList.add("mem-on");
-        }
-        memDiv.addEventListener("click", () => {
-          if (memDiv.classList.contains("mem-on")) {
-            memDiv.classList.remove("mem-on");
-            localStorage.removeItem(memKey);
-          } else {
-            memDiv.classList.add("mem-on");
-            localStorage.setItem(memKey, "1");
-          }
-          updateProgress(s.n);
-        });
-        gridMem.appendChild(memDiv);
+      for (let v = 1; v <= s.verses; v++) {
+        const mem = document.createElement("div");
+        mem.className = "verse";
+        mem.textContent = v;
+        mem.addEventListener("click", () => toggle("mem", s.n, v, mem));
+        gridMem.appendChild(mem);
 
-        const revDiv = document.createElement("div");
-        revDiv.className = "verse";
-        revDiv.textContent = i;
-        const revKey = storageKeyRev(s.n, i);
-        if (localStorage.getItem(revKey) === "1") {
-          revDiv.classList.add("rev-on");
-        }
-        revDiv.addEventListener("click", () => {
-          if (revDiv.classList.contains("rev-on")) {
-            revDiv.classList.remove("rev-on");
-            localStorage.removeItem(revKey);
-          } else {
-            revDiv.classList.add("rev-on");
-            localStorage.setItem(revKey, "1");
-          }
-          updateProgress(s.n);
-        });
-        gridRev.appendChild(revDiv);
+        const rev = document.createElement("div");
+        rev.className = "verse";
+        rev.textContent = v;
+        rev.addEventListener("click", () => toggle("rev", s.n, v, rev));
+        gridRev.appendChild(rev);
       }
 
-      updateProgress(s.n);
+      restoreState(s.n);
+      updateProgress();
     }
 
-    function updateProgress(surah) {
-      const s = SURAH_DATA.find(x => x.n === surah);
+    function toggle(type, surahNum, verseNum, elVerse) {
+      const k = key(type, surahNum, verseNum);
+      const active = localStorage.getItem(k);
+      const cls = type === "mem" ? "mem-on" : "rev-on";
+
+      if (active) {
+        localStorage.removeItem(k);
+        elVerse.classList.remove(cls);
+      } else {
+        localStorage.setItem(k, "1");
+        elVerse.classList.add(cls);
+      }
+      updateProgress();
+    }
+
+    function restoreState(surahNum) {
+      const s = SURAH_DATA.find(x => x.n == surahNum);
       if (!s) return;
-      let memCount = 0;
-      let revCount = 0;
-      for (let i = 1; i <= s.verses; i++) {
-        if (localStorage.getItem(storageKeyMem(surah, i)) === "1") memCount++;
-        if (localStorage.getItem(storageKeyRev(surah, i)) === "1") revCount++;
+
+      for (let v = 1; v <= s.verses; v++) {
+        const memKey = key("mem", surahNum, v);
+        const revKey = key("rev", surahNum, v);
+        const memElem = gridMem.children[v - 1];
+        const revElem = gridRev.children[v - 1];
+
+        if (localStorage.getItem(memKey)) {
+          memElem.classList.add("mem-on");
+        }
+        if (localStorage.getItem(revKey)) {
+          revElem.classList.add("rev-on");
+        }
       }
-      const S = STRINGS[currentLang] || STRINGS.fr;
-      progressText.textContent = S.progress(memCount, revCount);
     }
 
-    function init() {
-      const select = document.getElementById("surahSelect");
-      SURAH_DATA.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s.n;
-        opt.textContent = `${s.n} – ${s.latin}`;
-        select.appendChild(opt);
-      });
+    function updateProgress() {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
 
-      select.addEventListener("change", () => {
-        const num = parseInt(select.value, 10);
-        renderSurah(num);
-      });
+      let mem = 0, rev = 0;
+      for (let v = 1; v <= s.verses; v++) {
+        if (localStorage.getItem(key("mem", surahNum, v))) mem++;
+        if (localStorage.getItem(key("rev", surahNum, v))) rev++;
+      }
 
-      select.value = "78";
-      renderSurah(78);
-
-      applyLang("fr");
+      const lang = langSelect.value || "fr";
+      const S = STRINGS[lang] || STRINGS.fr;
+      progressText.textContent = S.progress(mem, rev);
     }
 
-    document.addEventListener("DOMContentLoaded", init);
+    /* ------ Initialisation ------ */
+    (function init() {
+      const savedLang = localStorage.getItem("nootqa_lang") || "fr";
+      langSelect.value = savedLang;
+      applyLanguage(savedLang);
+
+      const savedSurah = parseInt(localStorage.getItem("nootqa_surah") || "1", 10);
+      surahSelect.value = savedSurah;
+      buildSurah(savedSurah);
+
+      surahSelect.addEventListener("change", () => {
+        const n = parseInt(surahSelect.value, 10);
+        localStorage.setItem("nootqa_surah", n);
+        buildSurah(n);
+      });
+    })();
   </script>
 </body>
 </html>
