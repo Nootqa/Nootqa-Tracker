@@ -5,17 +5,13 @@
   <title>Qur'an Tracker – Hifdh & Révision</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Couleur de thème pour PWA -->
+  <!-- PWA / Manifest -->
+  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#a1897b" />
 
-  <!-- Manifest PWA -->
-  <link rel="manifest" href="manifest.webmanifest" />
-
-  <!-- Icône iOS (tu pourras mettre un vrai logo plus tard) -->
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Qur'an Tracker" />
+  <!-- Icônes (à ajouter dans le dépôt : icon-192.png et icon-512.png) -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
 
   <style>
     * {
@@ -411,9 +407,7 @@
           </div>
 
           <div class="footer-note" id="footerNote">
-            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.  
-            <br />
-            © Nootqa – usage strictement personnel, reproduction et partage interdits.
+            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.
           </div>
 
         </div>
@@ -555,7 +549,7 @@
         revSub: "Clique sur les versets révisés.",
         legendMem: "Mémorisé",
         legendRev: "Révisé",
-        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.  \n© Nootqa – usage strictement personnel, reproduction et partage interdits.",
+        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.",
         progress(mem, rev) {
           return `${mem} mémorisé · ${rev} révisé`;
         }
@@ -573,7 +567,7 @@
         revSub: "Tap the verses you have revised.",
         legendMem: "Memorised",
         legendRev: "Revised",
-        footerNote: "A minimal interface to help you stay consistent with your Qur'an.  \n© Nootqa – strictly personal use only.",
+        footerNote: "A minimal interface to help you stay consistent with your Qur'an.",
         progress(mem, rev) {
           const m = mem === 1 ? "verse" : "verses";
           const r = rev === 1 ? "verse" : "verses";
@@ -743,13 +737,17 @@
         buildSurah(n);
       });
     })();
+  </script>
 
-    /* ------ Enregistrement du Service Worker (PWA) ------ */
+  <!-- Enregistrement du Service Worker pour la PWA -->
+  <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js").catch(err => {
-          console.log("SW registration failed", err);
-        });
+        navigator.serviceWorker
+          .register("/sw.js")
+          .catch((err) => {
+            console.log("Service worker registration failed:", err);
+          });
       });
     }
   </script>
