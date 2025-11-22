@@ -4,18 +4,12 @@
   <meta charset="UTF-8" />
   <title>Qur'an Tracker – Hifdh & Révision</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- PWA -->
-  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#a1897b" />
-
+  <link rel="manifest" href="/manifest.json" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     :root {
-      /* Palette mocha neutre (thème par défaut) */
       --bg: #efe8e1;
       --card: #ffffff;
       --primary: #a1897b;
@@ -24,26 +18,23 @@
       --text-main: #2b2320;
       --text-soft: #6e625a;
       --text-muted: #9b8f86;
-
-      --mem-color: #a1897b;  /* mémorisation */
-      --rev-color: #6f7b70;  /* révision */
-      --rev-bg: #f3ebe4;     /* fond beige clair révision */
+      --mem-color: #a1897b;
+      --rev-color: #6f7b70;
+      --rev-bg: #f3ebe4;
     }
 
-    /* Thème rose nude */
-    body[data-theme="rose"] {
-      --bg: #f7eef2;
+    [data-theme="rose"] {
+      --bg: #f7edf2;
       --card: #ffffff;
-      --primary: #c88fa4;
-      --primary-soft: #f2d8e2;
-      --border-soft: #e1c7d4;
-      --text-main: #2b2224;
-      --text-soft: #7b636d;
-      --text-muted: #a38a94;
-
-      --mem-color: #c88fa4;
-      --rev-color: #7c8a80;
-      --rev-bg: #f7edf0;
+      --primary: #c38ba6;
+      --primary-soft: #f1d6e3;
+      --border-soft: #e4bfd3;
+      --text-main: #2b2225;
+      --text-soft: #705260;
+      --text-muted: #a08695;
+      --mem-color: #c38ba6;
+      --rev-color: #7e748b;
+      --rev-bg: #f6e8f1;
     }
 
     body {
@@ -73,6 +64,7 @@
       justify-content: space-between;
       gap: 8px;
       margin-bottom: 6px;
+      flex-wrap: wrap;
     }
 
     .brand {
@@ -83,31 +75,29 @@
       white-space: nowrap;
     }
 
-    .right-controls {
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 4px;
-    }
-
-    .lang-switch,
-    .theme-switch {
-      display: flex;
-      gap: 4px;
-      align-items: center;
       font-size: 0.8rem;
     }
 
-    .lang-label,
-    .theme-label {
+    .control-label {
       color: var(--text-muted);
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.16em;
     }
 
-    .lang-select,
-    .theme-select {
+    .pill-select {
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid var(--border-soft);
@@ -142,10 +132,7 @@
       border: 1px solid #e2d3c8;
     }
 
-    .tracker {
-      background: var(--card);
-      display: block;
-    }
+    .tracker { background: var(--card); }
 
     .header-ribbon {
       background: var(--primary);
@@ -242,6 +229,27 @@
       margin-bottom: 8px;
     }
 
+    .section-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .mini-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.75);
+      padding: 3px 8px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      color: var(--text-soft);
+    }
+
+    .mini-btn:hover {
+      background: #fff;
+    }
+
     .grid-wrapper {
       background: var(--primary-soft);
       border-radius: 12px;
@@ -269,9 +277,7 @@
                   transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease;
     }
 
-    .verse:active {
-      transform: scale(0.94);
-    }
+    .verse:active { transform: scale(0.94); }
 
     .verse.mem-on {
       background: var(--mem-color);
@@ -322,34 +328,18 @@
       border-color: var(--rev-color);
     }
 
-    .bulk-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .bulk-btn {
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: rgba(255,255,255,0.8);
-      font-size: 0.7rem;
-      padding: 4px 10px;
-      cursor: pointer;
-      color: var(--text-soft);
-    }
-
-    .bulk-btn.secondary {
-      background: transparent;
-    }
-
     .progress {
       margin-top: 10px;
       font-size: 0.72rem;
       color: var(--text-soft);
       text-align: center;
-      line-height: 1.5;
+    }
+
+    .global {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      text-align: center;
     }
 
     .footer-note {
@@ -360,8 +350,8 @@
       line-height: 1.4;
     }
 
-    .legal {
-      margin-top: 10px;
+    .copyright {
+      margin-top: 14px;
       font-size: 0.68rem;
       color: var(--text-muted);
       text-align: center;
@@ -372,29 +362,561 @@
       .body { padding: 18px 18px 22px 18px; }
       .verse-grid { gap: 5px; }
       .verse { font-size: 0.72rem; padding: 5px 0; }
-
-      .right-controls {
-        flex-direction: row;
-        align-items: center;
-        gap: 12px;
-      }
     }
   </style>
 </head>
-
 <body>
-  <div class="app">
+  <div class="app" id="appRoot">
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</div>
 
-    <!-- Basmala -->
-    <div class="bismillah">
-      بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ
-    </div>
-
-    <!-- Barre du haut -->
     <div class="top-bar">
       <div class="brand" id="brandText">QUR'AN TRACKER</div>
-      <div class="right-controls">
-        <div class="lang-switch">
+      <div class="controls">
+        <div class="control-group">
+          <span class="control-label" id="langLabel">LANGUE</span>
+          <select id="langSelect" class="pill-select">
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <span class="control-label" id="themeLabel">THÈME</span>
+          <select id="themeSelect" class="pill-select">
+            <option value="mocha">Mocha</option>
+            <option value="rose">Rose nude</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <h1 id="mainTitle">QUR'AN TRACKER – HIFDH &amp; RÉVISION</h1>
+    <div class="subtitle" id="subtitleText">
+      Une mini-application pour suivre ta mémorisation et ta révision du Qur'an.
+    </div>
+
+    <div class="card">
+      <div class="tracker" id="tracker">
+        <div class="header-ribbon">
+          <div class="header-top">
+            <div class="header-text">
+              <div class="surah-label" id="currentSurahLabel">Sourate actuelle</div>
+              <div class="surah-name" id="surahLatin">1. Al-Fatiha</div>
+              <div class="surah-meta" id="surahMeta">7 versets</div>
+            </div>
+            <div class="surah-ar" id="surahArabic">سورة الفاتحة</div>
+          </div>
+          <div class="selector">
+            <label for="surahSelect" id="surahSelectLabel">Choisir une sourate :</label>
+            <select id="surahSelect"></select>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="section">
+            <div class="section-title" id="memTitle">Mémorisation (ḥifdh)</div>
+            <div class="section-sub" id="memSub">Clique sur les versets mémorisés.</div>
+            <div class="section-actions">
+              <button class="mini-btn" id="memSelectAll">Tout sélectionner</button>
+              <button class="mini-btn" id="memClearAll">Tout effacer</button>
+            </div>
+            <div class="grid-wrapper">
+              <div id="gridMem" class="verse-grid"></div>
+              <div class="legend">
+                <div class="legend-item">
+                  <div class="legend-dot mem"></div>
+                  <span id="legendMem">Mémorisé</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title" id="revTitle">Révision (mourājaʿa)</div>
+            <div class="section-sub" id="revSub">Clique sur les versets révisés.</div>
+            <div class="section-actions">
+              <button class="mini-btn" id="revSelectAll">Tout sélectionner</button>
+              <button class="mini-btn" id="revClearAll">Tout effacer</button>
+            </div>
+            <div class="grid-wrapper">
+              <div id="gridRev" class="verse-grid"></div>
+              <div class="legend">
+                <div class="legend-item">
+                  <div class="legend-dot rev"></div>
+                  <span id="legendRev">Révisé</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress" id="progressText">
+            0 mémorisé · 0 révisé
+          </div>
+          <div class="global" id="globalText">
+            Sourates entièrement mémorisées : 0 / 114 · Versets révisés : 0
+          </div>
+          <div class="footer-note" id="footerNote">
+            Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.
+          </div>
+          <div class="copyright">
+            © 2025 Nootqa. Usage personnel uniquement – reproduction ou partage du code interdits.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SURAH_DATA = [
+      { n: 1, latin: "Al-Fatiha", arabic: "الفاتحة", verses: 7 },
+      { n: 2, latin: "Al-Baqara", arabic: "البقرة", verses: 286 },
+      { n: 3, latin: "Aal Imran", arabic: "آل عمران", verses: 200 },
+      { n: 4, latin: "An-Nisa", arabic: "النساء", verses: 176 },
+      { n: 5, latin: "Al-Ma'idah", arabic: "المائدة", verses: 120 },
+      { n: 6, latin: "Al-An'am", arabic: "الأنعام", verses: 165 },
+      { n: 7, latin: "Al-A'raf", arabic: "الأعراف", verses: 206 },
+      { n: 8, latin: "Al-Anfal", arabic: "الأنفال", verses: 75 },
+      { n: 9, latin: "At-Tawbah", arabic: "التوبة", verses: 129 },
+      { n: 10, latin: "Yunus", arabic: "يونس", verses: 109 },
+      { n: 11, latin: "Hud", arabic: "هود", verses: 123 },
+      { n: 12, latin: "Yusuf", arabic: "يوسف", verses: 111 },
+      { n: 13, latin: "Ar-Ra'd", arabic: "الرعد", verses: 43 },
+      { n: 14, latin: "Ibrahim", arabic: "إبراهيم", verses: 52 },
+      { n: 15, latin: "Al-Hijr", arabic: "الحجر", verses: 99 },
+      { n: 16, latin: "An-Nahl", arabic: "النحل", verses: 128 },
+      { n: 17, latin: "Al-Isra", arabic: "الإسراء", verses: 111 },
+      { n: 18, latin: "Al-Kahf", arabic: "الكهف", verses: 110 },
+      { n: 19, latin: "Maryam", arabic: "مريم", verses: 98 },
+      { n: 20, latin: "Ta-Ha", arabic: "طه", verses: 135 },
+      { n: 21, latin: "Al-Anbiya", arabic: "الأنبياء", verses: 112 },
+      { n: 22, latin: "Al-Hajj", arabic: "الحج", verses: 78 },
+      { n: 23, latin: "Al-Mu'minun", arabic: "المؤمنون", verses: 118 },
+      { n: 24, latin: "An-Nur", arabic: "النور", verses: 64 },
+      { n: 25, latin: "Al-Furqan", arabic: "الفرقان", verses: 77 },
+      { n: 26, latin: "Ash-Shu'ara", arabic: "الشعراء", verses: 227 },
+      { n: 27, latin: "An-Naml", arabic: "النمل", verses: 93 },
+      { n: 28, latin: "Al-Qasas", arabic: "القصص", verses: 88 },
+      { n: 29, latin: "Al-Ankabut", arabic: "العنكبوت", verses: 69 },
+      { n: 30, latin: "Ar-Rum", arabic: "الروم", verses: 60 },
+      { n: 31, latin: "Luqman", arabic: "لقمان", verses: 34 },
+      { n: 32, latin: "As-Sajda", arabic: "السجدة", verses: 30 },
+      { n: 33, latin: "Al-Ahzab", arabic: "الأحزاب", verses: 73 },
+      { n: 34, latin: "Saba", arabic: "سبأ", verses: 54 },
+      { n: 35, latin: "Fatir", arabic: "فاطر", verses: 45 },
+      { n: 36, latin: "Ya-Sin", arabic: "يس", verses: 83 },
+      { n: 37, latin: "As-Saffat", arabic: "الصافات", verses: 182 },
+      { n: 38, latin: "Sad", arabic: "ص", verses: 88 },
+      { n: 39, latin: "Az-Zumar", arabic: "الزمر", verses: 75 },
+      { n: 40, latin: "Ghafir", arabic: "غافر", verses: 85 },
+      { n: 41, latin: "Fussilat", arabic: "فصلت", verses: 54 },
+      { n: 42, latin: "Ash-Shura", arabic: "الشورى", verses: 53 },
+      { n: 43, latin: "Az-Zukhruf", arabic: "الزخرف", verses: 89 },
+      { n: 44, latin: "Ad-Dukhan", arabic: "الدخان", verses: 59 },
+      { n: 45, latin: "Al-Jathiyah", arabic: "الجاثية", verses: 37 },
+      { n: 46, latin: "Al-Ahqaf", arabic: "الأحقاف", verses: 35 },
+      { n: 47, latin: "Muhammad", arabic: "محمد", verses: 38 },
+      { n: 48, latin: "Al-Fath", arabic: "الفتح", verses: 29 },
+      { n: 49, latin: "Al-Hujurat", arabic: "الحجرات", verses: 18 },
+      { n: 50, latin: "Qaf", arabic: "ق", verses: 45 },
+      { n: 51, latin: "Adh-Dhariyat", arabic: "الذاريات", verses: 60 },
+      { n: 52, latin: "At-Tur", arabic: "الطور", verses: 49 },
+      { n: 53, latin: "An-Najm", arabic: "النجم", verses: 62 },
+      { n: 54, latin: "Al-Qamar", arabic: "القمر", verses: 55 },
+      { n: 55, latin: "Ar-Rahman", arabic: "الرحمن", verses: 78 },
+      { n: 56, latin: "Al-Waqi'ah", arabic: "الواقعة", verses: 96 },
+      { n: 57, latin: "Al-Hadid", arabic: "الحديد", verses: 29 },
+      { n: 58, latin: "Al-Mujadila", arabic: "المجادلة", verses: 22 },
+      { n: 59, latin: "Al-Hashr", arabic: "الحشر", verses: 24 },
+      { n: 60, latin: "Al-Mumtahanah", arabic: "الممتحنة", verses: 13 },
+      { n: 61, latin: "As-Saff", arabic: "الصف", verses: 14 },
+      { n: 62, latin: "Al-Jumu'ah", arabic: "الجمعة", verses: 11 },
+      { n: 63, latin: "Al-Munafiqun", arabic: "المنافقون", verses: 11 },
+      { n: 64, latin: "At-Taghabun", arabic: "التغابن", verses: 18 },
+      { n: 65, latin: "At-Talaq", arabic: "الطلاق", verses: 12 },
+      { n: 66, latin: "At-Tahrim", arabic: "التحريم", verses: 12 },
+      { n: 67, latin: "Al-Mulk", arabic: "الملك", verses: 30 },
+      { n: 68, latin: "Al-Qalam", arabic: "القلم", verses: 52 },
+      { n: 69, latin: "Al-Haqqah", arabic: "الحاقة", verses: 52 },
+      { n: 70, latin: "Al-Ma'arij", arabic: "المعارج", verses: 44 },
+      { n: 71, latin: "Nuh", arabic: "نوح", verses: 28 },
+      { n: 72, latin: "Al-Jinn", arabic: "الجن", verses: 28 },
+      { n: 73, latin: "Al-Muzzammil", arabic: "المزمل", verses: 20 },
+      { n: 74, latin: "Al-Muddaththir", arabic: "المدثر", verses: 56 },
+      { n: 75, latin: "Al-Qiyamah", arabic: "القيامة", verses: 40 },
+      { n: 76, latin: "Al-Insan", arabic: "الإنسان", verses: 31 },
+      { n: 77, latin: "Al-Mursalat", arabic: "المرسلات", verses: 50 },
+      { n: 78, latin: "An-Naba", arabic: "النبأ", verses: 40 },
+      { n: 79, latin: "An-Nazi'at", arabic: "النازعات", verses: 46 },
+      { n: 80, latin: "Abasa", arabic: "عبس", verses: 42 },
+      { n: 81, latin: "At-Takwir", arabic: "التكوير", verses: 29 },
+      { n: 82, latin: "Al-Infitar", arabic: "الإنفطار", verses: 19 },
+      { n: 83, latin: "Al-Mutaffifin", arabic: "المطففين", verses: 36 },
+      { n: 84, latin: "Al-Inshiqaq", arabic: "الإنشقاق", verses: 25 },
+      { n: 85, latin: "Al-Buruj", arabic: "البروج", verses: 22 },
+      { n: 86, latin: "At-Tariq", arabic: "الطارق", verses: 17 },
+      { n: 87, latin: "Al-A'la", arabic: "الأعلى", verses: 19 },
+      { n: 88, latin: "Al-Ghashiyah", arabic: "الغاشية", verses: 26 },
+      { n: 89, latin: "Al-Fajr", arabic: "الفجر", verses: 30 },
+      { n: 90, latin: "Al-Balad", arabic: "البلد", verses: 20 },
+      { n: 91, latin: "Ash-Shams", arabic: "الشمس", verses: 15 },
+      { n: 92, latin: "Al-Layl", arabic: "الليل", verses: 21 },
+      { n: 93, latin: "Ad-Duha", arabic: "الضحى", verses: 11 },
+      { n: 94, latin: "Ash-Sharh", arabic: "الشرح", verses: 8 },
+      { n: 95, latin: "At-Tin", arabic: "التين", verses: 8 },
+      { n: 96, latin: "Al-Alaq", arabic: "العلق", verses: 19 },
+      { n: 97, latin: "Al-Qadr", arabic: "القدر", verses: 5 },
+      { n: 98, latin: "Al-Bayyinah", arabic: "البينة", verses: 8 },
+      { n: 99, latin: "Az-Zalzalah", arabic: "الزلزلة", verses: 8 },
+      { n: 100, latin: "Al-Adiyat", arabic: "العاديات", verses: 11 },
+      { n: 101, latin: "Al-Qari'ah", arabic: "القارعة", verses: 11 },
+      { n: 102, latin: "At-Takathur", arabic: "التكاثر", verses: 8 },
+      { n: 103, latin: "Al-Asr", arabic: "العصر", verses: 3 },
+      { n: 104, latin: "Al-Humazah", arabic: "الهمزة", verses: 9 },
+      { n: 105, latin: "Al-Fil", arabic: "الفيل", verses: 5 },
+      { n: 106, latin: "Quraysh", arabic: "قريش", verses: 4 },
+      { n: 107, latin: "Al-Ma'un", arabic: "الماعون", verses: 7 },
+      { n: 108, latin: "Al-Kawthar", arabic: "الكوثر", verses: 3 },
+      { n: 109, latin: "Al-Kafirun", arabic: "الكافرون", verses: 6 },
+      { n: 110, latin: "An-Nasr", arabic: "النصر", verses: 3 },
+      { n: 111, latin: "Al-Masad", arabic: "المسد", verses: 5 },
+      { n: 112, latin: "Al-Ikhlas", arabic: "الإخلاص", verses: 4 },
+      { n: 113, latin: "Al-Falaq", arabic: "الفلق", verses: 5 },
+      { n: 114, latin: "An-Nas", arabic: "الناس", verses: 6 }
+    ];
+
+    const STRINGS = {
+      fr: {
+        brand: "QUR'AN TRACKER",
+        langLabel: "LANGUE",
+        themeLabel: "THÈME",
+        mainTitle: "QUR'AN TRACKER – HIFDH & RÉVISION",
+        subtitle: "Une mini-application pour suivre ta mémorisation et ta révision du Qur'an.",
+        currentSurahLabel: "Sourate actuelle",
+        surahSelectLabel: "Choisir une sourate :",
+        memTitle: "Mémorisation (ḥifdh)",
+        memSub: "Clique sur les versets mémorisés.",
+        revTitle: "Révision (mourājaʿa)",
+        revSub: "Clique sur les versets révisés.",
+        legendMem: "Mémorisé",
+        legendRev: "Révisé",
+        memSelectAll: "Tout sélectionner",
+        memClearAll: "Tout effacer",
+        revSelectAll: "Tout sélectionner",
+        revClearAll: "Tout effacer",
+        footerNote: "Une interface simple pour te concentrer sur l'essentiel : ton Qur'an.",
+        progress(mem, rev) {
+          return `${mem} mémorisé · ${rev} révisé`;
+        },
+        global(memSurahs, revVerses) {
+          return `Sourates entièrement mémorisées : ${memSurahs} / 114 · Versets révisés : ${revVerses}`;
+        }
+      },
+      en: {
+        brand: "QUR'AN TRACKER",
+        langLabel: "LANG",
+        themeLabel: "THEME",
+        mainTitle: "QUR'AN TRACKER – HIFDH & REVISION",
+        subtitle: "A simple mini-app to track your Qur'an memorisation and revision.",
+        currentSurahLabel: "Current surah",
+        surahSelectLabel: "Choose a surah:",
+        memTitle: "Memorisation (ḥifdh)",
+        memSub: "Tap the verses you have memorised.",
+        revTitle: "Revision (murāja'ah)",
+        revSub: "Tap the verses you have revised.",
+        legendMem: "Memorised",
+        legendRev: "Revised",
+        memSelectAll: "Select all",
+        memClearAll: "Clear all",
+        revSelectAll: "Select all",
+        revClearAll: "Clear all",
+        footerNote: "A minimal interface to help you stay consistent with your Qur'an.",
+        progress(mem, rev) {
+          const m = mem === 1 ? "verse" : "verses";
+          const r = rev === 1 ? "verse" : "verses";
+          return `${mem} ${m} memorised · ${rev} ${r} revised`;
+        },
+        global(memSurahs, revVerses) {
+          return `Fully memorised surahs: ${memSurahs} / 114 · Revised verses: ${revVerses}`;
+        }
+      }
+    };
+
+    const $ = id => document.getElementById(id);
+
+    const brandText = $("brandText");
+    const langLabel = $("langLabel");
+    const themeLabel = $("themeLabel");
+    const mainTitle = $("mainTitle");
+    const subtitleText = $("subtitleText");
+    const currentSurahLabel = $("currentSurahLabel");
+    const surahSelectLabel = $("surahSelectLabel");
+    const memTitle = $("memTitle");
+    const memSub = $("memSub");
+    const revTitle = $("revTitle");
+    const revSub = $("revSub");
+    const legendMem = $("legendMem");
+    const legendRev = $("legendRev");
+    const footerNote = $("footerNote");
+    const progressText = $("progressText");
+    const globalText = $("globalText");
+
+    const langSelect = $("langSelect");
+    const themeSelect = $("themeSelect");
+    const surahSelect = $("surahSelect");
+    const surahLatin = $("surahLatin");
+    const surahArabic = $("surahArabic");
+    const surahMeta = $("surahMeta");
+    const gridMem = $("gridMem");
+    const gridRev = $("gridRev");
+    const memSelectAllBtn = $("memSelectAll");
+    const memClearAllBtn = $("memClearAll");
+    const revSelectAllBtn = $("revSelectAll");
+    const revClearAllBtn = $("revClearAll");
+    const appRoot = $("appRoot");
+
+    function storageKey(type, surah, verse) {
+      return `nootqa_${type}_${surah}_${verse}`;
+    }
+
+    function applyLanguage(lang) {
+      const S = STRINGS[lang] || STRINGS.fr;
+      document.documentElement.lang = lang;
+      document.body.dir = "ltr";
+
+      brandText.textContent = S.brand;
+      langLabel.textContent = S.langLabel;
+      themeLabel.textContent = S.themeLabel;
+      mainTitle.textContent = S.mainTitle;
+      subtitleText.textContent = S.subtitle;
+      currentSurahLabel.textContent = S.currentSurahLabel;
+      surahSelectLabel.textContent = S.surahSelectLabel;
+      memTitle.textContent = S.memTitle;
+      memSub.textContent = S.memSub;
+      revTitle.textContent = S.revTitle;
+      revSub.textContent = S.revSub;
+      legendMem.textContent = S.legendMem;
+      legendRev.textContent = S.legendRev;
+      footerNote.textContent = S.footerNote;
+      memSelectAllBtn.textContent = S.memSelectAll;
+      memClearAllBtn.textContent = S.memClearAll;
+      revSelectAllBtn.textContent = S.revSelectAll;
+      revClearAllBtn.textContent = S.revClearAll;
+
+      updateProgress();
+      localStorage.setItem("nootqa_lang", lang);
+    }
+
+    function applyTheme(theme) {
+      if (theme === "rose") {
+        appRoot.setAttribute("data-theme", "rose");
+      } else {
+        appRoot.setAttribute("data-theme", "");
+      }
+      localStorage.setItem("nootqa_theme", theme);
+    }
+
+    function buildSurah(num) {
+      const s = SURAH_DATA.find(x => x.n == num);
+      if (!s) return;
+
+      surahLatin.textContent = `${s.n}. ${s.latin}`;
+      surahArabic.textContent = "سورة " + s.arabic;
+      surahMeta.textContent = `${s.verses} versets`;
+
+      gridMem.innerHTML = "";
+      gridRev.innerHTML = "";
+
+      for (let v = 1; v <= s.verses; v++) {
+        const mem = document.createElement("div");
+        mem.className = "verse";
+        mem.textContent = v;
+        mem.addEventListener("click", () => toggle("mem", s.n, v, mem));
+        gridMem.appendChild(mem);
+
+        const rev = document.createElement("div");
+        rev.className = "verse";
+        rev.textContent = v;
+        rev.addEventListener("click", () => toggle("rev", s.n, v, rev));
+        gridRev.appendChild(rev);
+      }
+
+      restoreState(s.n);
+      updateProgress();
+    }
+
+    function toggle(type, surahNum, verseNum, elVerse) {
+      const k = storageKey(type, surahNum, verseNum);
+      const active = localStorage.getItem(k);
+      const cls = type === "mem" ? "mem-on" : "rev-on";
+
+      if (active) {
+        localStorage.removeItem(k);
+        elVerse.classList.remove(cls);
+      } else {
+        localStorage.setItem(k, "1");
+        elVerse.classList.add(cls);
+      }
+      updateProgress();
+    }
+
+    function restoreState(surahNum) {
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+
+      for (let v = 1; v <= s.verses; v++) {
+        const memKey = storageKey("mem", surahNum, v);
+        const revKey = storageKey("rev", surahNum, v);
+        const memElem = gridMem.children[v - 1];
+        const revElem = gridRev.children[v - 1];
+
+        if (localStorage.getItem(memKey)) {
+          memElem.classList.add("mem-on");
+        }
+        if (localStorage.getItem(revKey)) {
+          revElem.classList.add("rev-on");
+        }
+      }
+    }
+
+    function countGlobal() {
+      let memorisedSurahs = 0;
+      let revisedVerses = 0;
+
+      for (const s of SURAH_DATA) {
+        let allMem = s.verses > 0;
+        for (let v = 1; v <= s.verses; v++) {
+          if (localStorage.getItem(storageKey("rev", s.n, v))) {
+            revisedVerses++;
+          }
+          if (!localStorage.getItem(storageKey("mem", s.n, v))) {
+            allMem = false;
+          }
+        }
+        if (allMem) memorisedSurahs++;
+      }
+      return { memorisedSurahs, revisedVerses };
+    }
+
+    function updateProgress() {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+
+      let mem = 0, rev = 0;
+      for (let v = 1; v <= s.verses; v++) {
+        if (localStorage.getItem(storageKey("mem", surahNum, v))) mem++;
+        if (localStorage.getItem(storageKey("rev", surahNum, v))) rev++;
+      }
+
+      const lang = langSelect.value || "fr";
+      const S = STRINGS[lang] || STRINGS.fr;
+      progressText.textContent = S.progress(mem, rev);
+
+      const globalCounts = countGlobal();
+      globalText.textContent = S.global(
+        globalCounts.memorisedSurahs,
+        globalCounts.revisedVerses
+      );
+    }
+
+    memSelectAllBtn.addEventListener("click", () => {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+      for (let v = 1; v <= s.verses; v++) {
+        const k = storageKey("mem", surahNum, v);
+        localStorage.setItem(k, "1");
+        const el = gridMem.children[v - 1];
+        el.classList.add("mem-on");
+      }
+      updateProgress();
+    });
+
+    memClearAllBtn.addEventListener("click", () => {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+      for (let v = 1; v <= s.verses; v++) {
+        const k = storageKey("mem", surahNum, v);
+        localStorage.removeItem(k);
+        const el = gridMem.children[v - 1];
+        el.classList.remove("mem-on");
+      }
+      updateProgress();
+    });
+
+    revSelectAllBtn.addEventListener("click", () => {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+      for (let v = 1; v <= s.verses; v++) {
+        const k = storageKey("rev", surahNum, v);
+        localStorage.setItem(k, "1");
+        const el = gridRev.children[v - 1];
+        el.classList.add("rev-on");
+      }
+      updateProgress();
+    });
+
+    revClearAllBtn.addEventListener("click", () => {
+      const surahNum = parseInt(surahSelect.value || "1", 10);
+      const s = SURAH_DATA.find(x => x.n == surahNum);
+      if (!s) return;
+      for (let v = 1; v <= s.verses; v++) {
+        const k = storageKey("rev", surahNum, v);
+        localStorage.removeItem(k);
+        const el = gridRev.children[v - 1];
+        el.classList.remove("rev-on");
+      }
+      updateProgress();
+    });
+
+    function init() {
+      SURAH_DATA.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.n;
+        opt.textContent = `${s.n}. ${s.latin}`;
+        surahSelect.appendChild(opt);
+      });
+
+      const savedLang = localStorage.getItem("nootqa_lang") || "fr";
+      langSelect.value = savedLang;
+      applyLanguage(savedLang);
+
+      const savedTheme = localStorage.getItem("nootqa_theme") || "mocha";
+      themeSelect.value = savedTheme;
+      applyTheme(savedTheme);
+
+      const savedSurah = parseInt(localStorage.getItem("nootqa_surah") || "1", 10);
+      surahSelect.value = savedSurah;
+      buildSurah(savedSurah);
+
+      surahSelect.addEventListener("change", () => {
+        const n = parseInt(surahSelect.value, 10);
+        localStorage.setItem("nootqa_surah", n);
+        buildSurah(n);
+      });
+
+      langSelect.addEventListener("change", () => {
+        applyLanguage(langSelect.value);
+      });
+
+      themeSelect.addEventListener("change", () => {
+        applyTheme(themeSelect.value);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(err => {
+          console.error("Service worker registration failed:", err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>        <div class="lang-switch">
           <span class="lang-label" id="langLabel">LANGUE</span>
           <select id="langSelect" class="lang-select">
             <option value="fr">Français</option>
