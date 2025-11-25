@@ -1,8 +1,8 @@
-const CACHE_NAME = 'nootqa-tracker-v4';
+const CACHE_NAME = 'nootqa-tracker-v5';
 
 const ASSETS = [
-  '/',          // page racine
-  '/index.html' // ton tracker
+  '/',
+  '/index.html'
 ];
 
 self.addEventListener('install', event => {
