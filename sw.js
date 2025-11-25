@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nootqa-tracker-v5';
+const CACHE_NAME = 'nootqa-tracker-v6';
 
 const ASSETS = [
   '/',
