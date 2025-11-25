@@ -1,12 +1,12 @@
-// sw.js — PWA avec offline + mise à jour propre
-const CACHE_NAME = 'nootqa-tracker-v9';
+// sw.js — PWA avec offline rapide + mise à jour propre
+const CACHE_NAME = 'nootqa-tracker-v10';
 
-// Fichiers essentiels à mettre en cache
 const ASSETS = [
-  '/',           // racine (utile sur Vercel)
+  '/',           // racine (Vercel)
   '/index.html',
   '/manifest.json'
-  // tu peux ajouter ici: '/icon-192.png', '/icon-512.png'
+  // '/icon-192.png',
+  // '/icon-512.png'
 ];
 
 // INSTALL : on pré-cache les fichiers de base
@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// ACTIVATE : on supprime tous les anciens caches
+// ACTIVATE : on supprime les anciens caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -31,36 +31,39 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// FETCH :
-// - pour les navigations (pages) → "network first", fallback cache
-// - pour le reste → "cache first", fallback réseau
+// FETCH
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
   // On ne gère que les GET
   if (req.method !== 'GET') return;
 
-  // 1) Navigation (ouvrir / recharger la page)
+  // 1) Navigations (ouvrir / recharger la page)
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
-        .then((networkRes) => {
-          // On met à jour le cache avec la dernière version d’index.html
-          const clone = networkRes.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put('/index.html', clone);
-          });
-          return networkRes;
-        })
-        .catch(() => {
-          // Si on est offline → on renvoie la version en cache
-          return caches.match('/index.html');
-        })
+      caches.match('/index.html').then((cachedResponse) => {
+        // Si on a déjà une version en cache → on l'affiche tout de suite
+        const fetchPromise = fetch(req)
+          .then((networkRes) => {
+            // On met à jour le cache pour la prochaine fois
+            const clone = networkRes.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put('/index.html', clone);
+            });
+            return networkRes;
+          })
+          .catch(() => cachedResponse || Response.error());
+
+        // On renvoie ce qu'on a :
+        // - si cache dispo → très rapide
+        // - sinon (premier lancement) → on attend le réseau
+        return cachedResponse || fetchPromise;
+      })
     );
     return;
   }
 
-  // 2) Fichiers statiques (manifest, icônes, etc.)
+  // 2) Fichiers statiques (manifest, icônes…)
   event.respondWith(
     caches.match(req).then((cachedRes) => {
       if (cachedRes) return cachedRes;
