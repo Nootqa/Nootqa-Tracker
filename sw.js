@@ -1,39 +1,38 @@
-// sw.js — PWA avec offline + mise à jour propre
-const CACHE_NAME = 'nootqa-tracker-v8';
+const CACHE_NAME = 'nootqa-tracker-v4';
 
-// Les fichiers essentiels à mettre en cache
 const ASSETS = [
-  '/',          // racine (utile sur Vercel)
-  '/index.html',
-  '/manifest.json'
-  // tu peux ajouter ici par ex. /icon-192.png, /icon-512.png si tu en as
+  '/',          // page racine
+  '/index.html' // ton tracker
 ];
 
-// INSTALL : on pré-cache les fichiers de base
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
 });
 
-// ACTIVATE : on supprime tous les anciens caches
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((keys) =>
+    caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter((k) => k !== CACHE_NAME)
-          .map((k) => caches.delete(k))
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       )
     )
   );
-  self.clients.claim();
 });
 
-// FETCH :
-// - pour les navigations (pages) → stratégie "network first", fallback cache
-// - pour le reste (icônes, manifest…) → "cache first", fallback réseau
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(event.request).then(response =>
+      response ||
+      fetch(event.request).catch(() => caches.match('/index.html'))
+    )
+  );
+});
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
