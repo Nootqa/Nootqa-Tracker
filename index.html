@@ -367,11 +367,60 @@
       line-height: 1.4;
     }
 
+    /* --- Section Juz --- */
+    .juz-section {
+      margin-top: 16px;
+    }
+
+    .juz-card {
+      margin-top: 6px;
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--border-soft);
+      padding: 10px 12px 12px;
+    }
+
+    .juz-current {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .juz-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .juz-btn {
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #fff;
+      cursor: pointer;
+      color: var(--text-soft);
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .juz-btn.on {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .juz-progress {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
     .footer-note {
       font-size: 0.72rem;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 6px;
+      margin-top: 10px;
       line-height: 1.4;
     }
 
@@ -415,7 +464,7 @@
       <input
         id="activation-code"
         type="text"
-        placeholder="NOOTQA-XXXX-XXXX"
+        placeholder="NOOTQA-001"
         style="width:100%; padding:10px 12px; border-radius:999px; border:1px solid #d1c0b4; font-size:0.9rem; margin-bottom:10px; outline:none;"
       />
 
@@ -463,6 +512,12 @@
             <option value="rose">Rose nude</option>
           </select>
         </div>
+        <div class="control-row">
+          <span class="control-label" id="juzLabel">JUZ</span>
+          <select id="juzSelect" class="pill-select">
+            <option value="none">Aucun</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -472,7 +527,7 @@
       Une mini-application pour suivre ta mémorisation et ta révision du Qur'an.
     </div>
 
-    <!-- Carte principale -->
+    <!-- Carte principale sourates -->
     <div class="card">
       <div class="tracker" id="tracker">
         <div class="header-ribbon">
@@ -541,6 +596,26 @@
 
           <div class="global-stats" id="globalStats">
             Sourates totalement mémorisées : 0 / 114 · sourates totalement révisées : 0 / 114.
+          </div>
+
+          <!-- Section Juz -->
+          <div class="juz-section">
+            <div class="section-title" id="juzSectionTitle">Lecture par juz</div>
+            <div class="section-sub" id="juzSectionSub">
+              Choisis un juz dans le menu en haut, puis marque-le mémorisé ou révisé.
+            </div>
+            <div class="juz-card">
+              <div class="juz-current" id="juzCurrentLabel">
+                Aucun juz sélectionné.
+              </div>
+              <div class="juz-actions">
+                <button class="juz-btn" id="juzMemBtn">Marquer mémorisé</button>
+                <button class="juz-btn" id="juzRevBtn">Marquer révisé</button>
+              </div>
+              <div class="juz-progress" id="juzProgressText">
+                Juz mémorisés : 0 / 30 · Juz révisés : 0 / 30.
+              </div>
+            </div>
           </div>
 
           <div class="footer-note" id="footerNote">
@@ -675,6 +750,12 @@
       { n: 114, latin: "An-Nas", arabic: "الناس", verses: 6 }
     ];
 
+    /* --------- Liste des 30 Juz (nom simple) --------- */
+    const JUZ_LIST = Array.from({ length: 30 }, (_, i) => ({
+      id: i + 1,
+      label: `Juz ${i + 1}`
+    }));
+
     /* --------- Textes FR / EN --------- */
     const STRINGS = {
       fr: {
@@ -701,6 +782,19 @@
         },
         globalSummary(fullMem, fullRev) {
           return `Sourates totalement mémorisées : ${fullMem} / 114 · sourates totalement révisées : ${fullRev} / 114.`;
+        },
+        // Juz
+        juzLabel: "Juz",
+        juzSectionTitle: "Lecture par juz",
+        juzSectionSub: "Choisis un juz dans le menu en haut, puis marque-le mémorisé ou révisé.",
+        juzNoneSelected: "Aucun juz sélectionné.",
+        juzCurrent(j) {
+          return `Juz ${j}`;
+        },
+        juzMemBtn: "Marquer mémorisé",
+        juzRevBtn: "Marquer révisé",
+        juzProgress(memCount, revCount) {
+          return `Juz mémorisés : ${memCount} / 30 · Juz révisés : ${revCount} / 30.`;
         }
       },
       en: {
@@ -729,6 +823,19 @@
         },
         globalSummary(fullMem, fullRev) {
           return `Fully memorised surahs: ${fullMem} / 114 · fully revised surahs: ${fullRev} / 114.`;
+        },
+        // Juz
+        juzLabel: "Juz",
+        juzSectionTitle: "Reading by juz",
+        juzSectionSub: "Choose a juz in the top menu, then mark it memorised or revised.",
+        juzNoneSelected: "No juz selected.",
+        juzCurrent(j) {
+          return `Juz ${j}`;
+        },
+        juzMemBtn: "Mark memorised",
+        juzRevBtn: "Mark revised",
+        juzProgress(memCount, revCount) {
+          return `Juz memorised: ${memCount} / 30 · Juz revised: ${revCount} / 30.`;
         }
       }
     };
@@ -766,20 +873,27 @@
     const gridMem = el("gridMem");
     const gridRev = el("gridRev");
 
-    /* --------- Activation Nootqa (codes d’activation) --------- */
-    // ⚠️ Ici, version simple : liste de codes valides en dur.
-    // Pour Etsy : tu peux remplacer par tes vrais codes.
-    const VALID_CODES = [
-      "NOOTQA-TEST-0001",
-      "NOOTQA-TEST-0002",
-      "NOOTQA-TEST-0003"
-    ];
+    // Juz DOM
+    const juzLabel = el("juzLabel");
+    const juzSelect = el("juzSelect");
+    const juzSectionTitle = el("juzSectionTitle");
+    const juzSectionSub = el("juzSectionSub");
+    const juzCurrentLabel = el("juzCurrentLabel");
+    const juzMemBtn = el("juzMemBtn");
+    const juzRevBtn = el("juzRevBtn");
+    const juzProgressText = el("juzProgressText");
 
+    // Activation
     const activationScreen = document.getElementById("activation-screen");
     const activationInput  = document.getElementById("activation-code");
     const activationBtn    = document.getElementById("activation-btn");
     const activationMsg    = document.getElementById("activation-message");
     const appContainer     = document.querySelector(".app");
+
+    // Codes d’activation valides
+    const VALID_CODES = [
+      "NOOTQA-001"
+    ];
 
     function showApp() {
       if (activationScreen) activationScreen.style.display = "none";
@@ -845,8 +959,18 @@
       revClearAllBtn.textContent = S.revClearAll;
       footerNote.textContent = S.footerNote;
 
+      // Juz
+      juzLabel.textContent = S.juzLabel;
+      juzSectionTitle.textContent = S.juzSectionTitle;
+      juzSectionSub.textContent = S.juzSectionSub;
+      juzMemBtn.textContent = S.juzMemBtn;
+      juzRevBtn.textContent = S.juzRevBtn;
+
       updateProgress();
       updateGlobalStats();
+      updateJuzUI();
+      updateJuzProgress();
+
       localStorage.setItem("nootqa_lang", lang);
     }
 
@@ -978,7 +1102,7 @@
       globalStats.textContent = S.globalSummary(fullMem, fullRev);
     }
 
-    /* ------ Sélection globale ------ */
+    /* ------ Sélection globale versets ------ */
     function bulkToggle(type, on) {
       const surahNum = parseInt(surahSelect.value || "1", 10);
       const s = SURAH_DATA.find(x => x.n == surahNum);
@@ -1006,6 +1130,97 @@
     revSelectAllBtn.addEventListener("click", () => bulkToggle("rev", true));
     revClearAllBtn.addEventListener("click", () => bulkToggle("rev", false));
 
+    /* ---------- JUZ : stockage et UI ---------- */
+    function juzKey(type, juzId) {
+      return `nootqa_juz_${type}_${juzId}`;
+    }
+
+    function initJuzSelect() {
+      // on garde l’option "none" existante
+      JUZ_LIST.forEach(j => {
+        const opt = document.createElement("option");
+        opt.value = String(j.id);
+        opt.textContent = j.label;
+        juzSelect.appendChild(opt);
+      });
+
+      const savedJuz = localStorage.getItem("nootqa_juz_selected") || "none";
+      juzSelect.value = savedJuz;
+    }
+
+    function updateJuzUI() {
+      const lang = langSelect.value || "fr";
+      const S = STRINGS[lang] || STRINGS.fr;
+
+      const val = juzSelect.value;
+      if (val === "none") {
+        juzCurrentLabel.textContent = S.juzNoneSelected;
+        juzMemBtn.classList.remove("on");
+        juzRevBtn.classList.remove("on");
+        return;
+      }
+
+      const j = parseInt(val, 10);
+      juzCurrentLabel.textContent = S.juzCurrent(j);
+
+      const memOn = !!localStorage.getItem(juzKey("mem", j));
+      const revOn = !!localStorage.getItem(juzKey("rev", j));
+
+      if (memOn) juzMemBtn.classList.add("on");
+      else juzMemBtn.classList.remove("on");
+
+      if (revOn) juzRevBtn.classList.add("on");
+      else juzRevBtn.classList.remove("on");
+    }
+
+    function updateJuzProgress() {
+      let memCount = 0;
+      let revCount = 0;
+
+      for (const j of JUZ_LIST) {
+        if (localStorage.getItem(juzKey("mem", j.id))) memCount++;
+        if (localStorage.getItem(juzKey("rev", j.id))) revCount++;
+      }
+
+      const lang = langSelect.value || "fr";
+      const S = STRINGS[lang] || STRINGS.fr;
+      juzProgressText.textContent = S.juzProgress(memCount, revCount);
+    }
+
+    juzSelect.addEventListener("change", () => {
+      const val = juzSelect.value;
+      localStorage.setItem("nootqa_juz_selected", val);
+      updateJuzUI();
+    });
+
+    juzMemBtn.addEventListener("click", () => {
+      const val = juzSelect.value;
+      if (val === "none") return;
+      const j = parseInt(val, 10);
+      const k = juzKey("mem", j);
+      if (localStorage.getItem(k)) {
+        localStorage.removeItem(k);
+      } else {
+        localStorage.setItem(k, "1");
+      }
+      updateJuzUI();
+      updateJuzProgress();
+    });
+
+    juzRevBtn.addEventListener("click", () => {
+      const val = juzSelect.value;
+      if (val === "none") return;
+      const j = parseInt(val, 10);
+      const k = juzKey("rev", j);
+      if (localStorage.getItem(k)) {
+        localStorage.removeItem(k);
+      } else {
+        localStorage.setItem(k, "1");
+      }
+      updateJuzUI();
+      updateJuzProgress();
+    });
+
     /* ------ Initialisation ------ */
     (function init() {
       const savedLang = localStorage.getItem("nootqa_lang") || "fr";
@@ -1015,7 +1230,8 @@
       themeSelect.value = savedTheme;
       applyTheme(savedTheme);
 
-      applyLanguage(savedLang);
+      initJuzSelect();
+      applyLanguage(savedLang); // met aussi les textes Juz
 
       // Sourate par défaut = Al-Fâtiha (1)
       const savedSurah = parseInt(localStorage.getItem("nootqa_surah") || "1", 10);
@@ -1027,6 +1243,9 @@
         localStorage.setItem("nootqa_surah", n);
         buildSurah(n);
       });
+
+      updateJuzUI();
+      updateJuzProgress();
     })();
   </script>
 
