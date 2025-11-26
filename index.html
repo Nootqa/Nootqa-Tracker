@@ -514,29 +514,7 @@
             </div>
           </div>
 
-          <!-- RÉVISION PAR PAGES – HAFS MADANI -->
-          <div class="section">
-            <div class="section-title">Révision par pages</div>
-            <div class="section-sub">Sélectionne les pages du Mushaf Madani (Hafs).</div>
-
-            <div class="bulk-actions" style="margin-bottom:12px;">
-              <button class="bulk-btn secondary" id="byVersesBtn">Par versets</button>
-              <button class="bulk-btn" id="byPagesBtn">Par pages (Madani)</button>
-            </div>
-
-            <div class="grid-wrapper" id="pagesWrapper" style="display:none;">
-              <div id="gridPages" class="verse-grid"></div>
-
-              <div class="legend" style="margin-top:8px;">
-                <div class="legend-item">
-                  <div class="legend-dot rev"></div>
-                  <span>Page révisée</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Révision par versets -->
+          <!-- Révision -->
           <div class="section">
             <div class="section-title" id="revTitle">Révision (mourājaʿa)</div>
             <div class="section-sub" id="revSub">Clique sur les versets révisés.</div>
@@ -697,9 +675,6 @@
       { n: 114, latin: "An-Nas", arabic: "الناس", verses: 6 }
     ];
 
-    /* --------- Pages du Mushaf Madani (Hafs) --------- */
-    const MADANI_PAGES = 604;
-
     /* --------- Textes FR / EN --------- */
     const STRINGS = {
       fr: {
@@ -791,12 +766,9 @@
     const gridMem = el("gridMem");
     const gridRev = el("gridRev");
 
-    const byVersesBtn = document.getElementById("byVersesBtn");
-    const byPagesBtn  = document.getElementById("byPagesBtn");
-    const pagesWrapper = document.getElementById("pagesWrapper");
-    const gridPages = document.getElementById("gridPages");
-
     /* --------- Activation Nootqa (codes d’activation) --------- */
+    // ⚠️ Ici, version simple : liste de codes valides en dur.
+    // Pour Etsy : tu peux remplacer par tes vrais codes.
     const VALID_CODES = [
       "NOOTQA-TEST-0001",
       "NOOTQA-TEST-0002",
@@ -838,6 +810,7 @@
           return;
         }
 
+        // Code accepté → on enregistre l’activation sur cet appareil
         localStorage.setItem("nootqa_activated", "1");
         localStorage.setItem("nootqa_activation_code", code);
 
@@ -851,7 +824,7 @@
     function applyLanguage(lang) {
       const S = STRINGS[lang] || STRINGS.fr;
       document.documentElement.lang = lang;
-      document.body.dir = "ltr";
+      document.body.dir = "ltr"; // layout général LTR
 
       brandText.textContent = S.brand;
       langLabel.textContent = S.langLabel;
@@ -1005,7 +978,7 @@
       globalStats.textContent = S.globalSummary(fullMem, fullRev);
     }
 
-    /* ------ Sélection globale (versets) ------ */
+    /* ------ Sélection globale ------ */
     function bulkToggle(type, on) {
       const surahNum = parseInt(surahSelect.value || "1", 10);
       const s = SURAH_DATA.find(x => x.n == surahNum);
@@ -1033,51 +1006,6 @@
     revSelectAllBtn.addEventListener("click", () => bulkToggle("rev", true));
     revClearAllBtn.addEventListener("click", () => bulkToggle("rev", false));
 
-    /* ------ Grille des pages (Mushaf Madani) ------ */
-    function buildPagesGrid() {
-      if (!gridPages) return;
-      gridPages.innerHTML = "";
-
-      for (let p = 1; p <= MADANI_PAGES; p++) {
-        const cell = document.createElement("div");
-        cell.className = "verse";
-        cell.textContent = p;
-
-        const keyPage = `nootqa_page_${p}`;
-
-        if (localStorage.getItem(keyPage)) {
-          cell.classList.add("rev-on");
-        }
-
-        cell.addEventListener("click", () => {
-          if (localStorage.getItem(keyPage)) {
-            localStorage.removeItem(keyPage);
-            cell.classList.remove("rev-on");
-          } else {
-            localStorage.setItem(keyPage, "1");
-            cell.classList.add("rev-on");
-          }
-        });
-
-        gridPages.appendChild(cell);
-      }
-    }
-
-    /* ------ Boutons Par versets / Par pages ------ */
-    if (byVersesBtn && byPagesBtn && pagesWrapper) {
-      byVersesBtn.addEventListener("click", () => {
-        pagesWrapper.style.display = "none";
-        byVersesBtn.classList.add("secondary");
-        byPagesBtn.classList.remove("secondary");
-      });
-
-      byPagesBtn.addEventListener("click", () => {
-        pagesWrapper.style.display = "block";
-        byPagesBtn.classList.add("secondary");
-        byVersesBtn.classList.remove("secondary");
-      });
-    }
-
     /* ------ Initialisation ------ */
     (function init() {
       const savedLang = localStorage.getItem("nootqa_lang") || "fr";
@@ -1089,6 +1017,7 @@
 
       applyLanguage(savedLang);
 
+      // Sourate par défaut = Al-Fâtiha (1)
       const savedSurah = parseInt(localStorage.getItem("nootqa_surah") || "1", 10);
       surahSelect.value = savedSurah;
       buildSurah(savedSurah);
@@ -1098,9 +1027,6 @@
         localStorage.setItem("nootqa_surah", n);
         buildSurah(n);
       });
-
-      // construire la grille des pages une seule fois
-      buildPagesGrid();
     })();
   </script>
 
@@ -1116,3 +1042,4 @@
   </script>
 </body>
 </html>
+
